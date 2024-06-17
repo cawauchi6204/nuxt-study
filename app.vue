@@ -1,13 +1,21 @@
 <script setup lang="ts">
-const msg = ref("まだ")
-const onButtonClick = (label: string, event: Event) => {
-  const target = event.target as HTMLButtonElement
-  const text = target.innerText
-  msg.value = `${label}と${text}`
-}
+import type { Member } from '@/interfaces';
+
+// まずジェネリクス指定する
+useState<Map<number, Member>>(
+  // ステート名(アプリケーション全体で一意になるようにする)
+  "memberList",
+  // 初期値
+  () => {
+    const memberListInit = new Map<number, Member>();
+    memberListInit.set(33456, { id: 33456, name: "田中太郎", email: "bow@example.com", points: 35, note: "初回入会特典あり。" });
+    memberListInit.set(47783, { id: 47783, name: "鈴木二郎", email: "mue@example.com", points: 53 });
+
+    return memberListInit
+  }
+)
 </script>
 
 <template>
-  <p>{{ msg }}</p>
-  <button @click="onButtonClick('Hello', $event)">こんにちは</button>
+  <TheBaseSection />
 </template>
