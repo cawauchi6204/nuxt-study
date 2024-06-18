@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import type { Member } from "@/interfaces";
+import type { Member } from "@/interfaces"
+
+const PAGE_TITLE = "会員リスト"
 
 definePageMeta({
 	layout: "member",
 });
+useHead({
+	title: PAGE_TITLE
+})
 
 const memberList = useState<Map<number, Member>>("memberList");
 </script>
