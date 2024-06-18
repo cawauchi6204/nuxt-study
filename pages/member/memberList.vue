@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import type { Member } from "@/interfaces";
 
-//会員情報リストをステートから取得。
+definePageMeta({
+	layout: "member"
+	// layout: false
+});
+
 const memberList = useState<Map<number, Member>>("memberList");
 </script>
 
 <template>
-	<h1>会員管理</h1>
 	<nav id="breadcrumbs">
 		<ul>
 			<li>
@@ -23,8 +26,6 @@ const memberList = useState<Map<number, Member>>("memberList");
 		<section>
 			<ul>
 				<li v-for="[id, member] in memberList" v-bind:key="id">
-					<!-- params idを設定している -->
-					<!--[id]は取り除かれ、memberDetail-idとなっている  -->
 					<NuxtLink v-bind:to="{ name: 'member-memberDetail-id', params: { id: id } }">
 						IDが{{ id }}の{{ member.name }}さん
 					</NuxtLink>
