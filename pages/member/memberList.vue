@@ -2,8 +2,7 @@
 import type { Member } from "@/interfaces";
 
 definePageMeta({
-	layout: "member"
-	// layout: false
+	layout: "member",
 });
 
 const memberList = useState<Map<number, Member>>("memberList");
