@@ -17,12 +17,14 @@ const memberList = useState<Map<number, Member>>("memberList");
 	</nav>
 	<section>
 		<h2>会員リスト</h2>
-		<!-- <p>
+		<p>
 			新規登録は<NuxtLink v-bind:to="{ name: 'member-memberAdd' }">こちら</NuxtLink>から
-		</p> -->
+		</p>
 		<section>
 			<ul>
 				<li v-for="[id, member] in memberList" v-bind:key="id">
+					<!-- params idを設定している -->
+					<!--[id]は取り除かれ、memberDetail-idとなっている  -->
 					<NuxtLink v-bind:to="{ name: 'member-memberDetail-id', params: { id: id } }">
 						IDが{{ id }}の{{ member.name }}さん
 					</NuxtLink>
