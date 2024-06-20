@@ -1,8 +1,8 @@
 <template>
 	<header>
-		<h1>レイアウトサンプル</h1>
+		<h1>サーバーサンプル</h1>
 	</header>
 	<main>
-		<slot/>
+		<slot />
 	</main>
 </template>

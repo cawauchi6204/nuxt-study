@@ -1,33 +1,35 @@
 <script setup lang="ts">
-import type {Member} from "@/interfaces";
 
 definePageMeta({
 	layout: "member"
 	// layout: false
 });
 
-const memberList = useState<Map<number, Member>>("memberList");
+// 同一Nuxtプロジェクト内のサーバーAPIエンドポイントへのアクセスの場合はhttpsなどのプロトコル部分やホスト部分は省略することができる
+const { data, pending } = useLazyFetch("/api/getMemberList")
+
 </script>
 
 <template>
 	<nav id="breadcrumbs">
 		<ul>
-			<li><NuxtLink v-bind:to="{name: 'index'}">TOP</NuxtLink></li>
+			<li>
+				<NuxtLink v-bind:to="{ name: 'index' }">TOP</NuxtLink>
+			</li>
 			<li>会員リスト</li>
 		</ul>
 	</nav>
 	<section>
 		<h2>会員リスト</h2>
 		<p>
-			新規登録は<NuxtLink v-bind:to="{name: 'member-memberAdd'}">こちら</NuxtLink>から
+			新規登録は<NuxtLink v-bind:to="{ name: 'member-memberAdd' }">こちら</NuxtLink>から
 		</p>
 		<section>
-			<ul>
-				<li
-					v-for="[id, member] in memberList"
-					v-bind:key="id">
-					<NuxtLink v-bind:to="{name: 'member-memberDetail-id', params: {id: id}}">
-						IDが{{id}}の{{member.name}}さん
+			<p v-if="pending">読み込み中...</p>
+			<ul v-else>
+				<li v-for="member in data" v-bind:key="member.id">
+					<NuxtLink v-bind:to="{ name: 'member-memberDetail-id', params: { id: member.id } }">
+						IDが{{ member.id }}の{{ member.name }}さん
 					</NuxtLink>
 				</li>
 			</ul>
