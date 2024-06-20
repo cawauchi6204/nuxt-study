@@ -1,7 +1,5 @@
-export interface Member {
+export interface City {
   id: number;
   name: string;
-  email: string;
-  points: number;
-  note?: string;
+  q: string;
 }
