@@ -1,10 +1,7 @@
-export interface City {
+export interface Member {
   id: number;
   name: string;
-  q: string;
-}
-
-export interface WeatherInfoData {
-  cityName: string;
-  description: string;
+  email: string;
+  points: number;
+  note?: string;
 }
