@@ -1,18 +1,15 @@
 <script setup lang="ts">
-import type { City } from "@/interfaces";
+import type { City, WeatherInfoData } from "@/interfaces";
 
 //都市情報リストをステートから取得。
 const cityList = useState<Map<number, City>>("cityList");
 //初期都市IDを大阪に設定。
 const selectedCityId = ref(1853909);
-//初期都市情報を取得。
-const selectedCityInit = cityList.value.get(selectedCityId.value) as City;
-//都市情報のテンプレート変数を用意。
-const selectedCity = ref(selectedCityInit);
 
 const runtimeConfig = useRuntimeConfig();
-const { data, pending: status, refresh } = await useAsyncData(
+const asyncData = await useAsyncData(
 	(): Promise<any> => {
+		const selectedCity = cityList.value.get(selectedCityId.value) as City;
 		const weatherInfoUrl = "https://api.openweathermap.org/data/2.5/weather";
 		const params: {
 			lang: string;
@@ -21,7 +18,7 @@ const { data, pending: status, refresh } = await useAsyncData(
 		} =
 		{
 			lang: "ja",
-			q: selectedCity.value.q,
+			q: selectedCity.q,
 			//APIキーのクエリパラメータ。ここに各自の文字列を記述する!!
 			appid: runtimeConfig.public.openWeatherApiKey
 		}
@@ -31,36 +28,38 @@ const { data, pending: status, refresh } = await useAsyncData(
 		return response;
 	},
 	{
-		transform: (data: any): string => {
+		transform: (data: any): WeatherInfoData => {
 			const weatherArray = data.weather;
 			const weather = weatherArray[0];
-			return weather.description;
+			return {
+				cityName: `${data.name}の天気`,
+				description: weather.description
+			};
 		},
-		server: true,
-
+		// watchに配列で指定したステートが変更されたときに再取得する。
+		// この場合、selectedCityIdが変更されたときに再取得する。
+		watch: [selectedCityId]
 	}
 );
-
-const onCityChanged = () => {
-	selectedCity.value = cityList.value.get(selectedCityId.value) as City;
-	refresh();
-}
+const pending = asyncData.pending;
+const data = asyncData.data;
 </script>
 
 <template>
 	<section>
 		<label>
 			表示するお天気ポイント:
-			<select v-model="selectedCityId" v-on:change="onCityChanged">
+			<!-- onChangeではなくv-modelにしている -->
+			<select v-model="selectedCityId">
 				<option v-for="[id, city] in cityList" v-bind:key="id" v-bind:value="id">
 					{{ city.name }}
 				</option>
 			</select>
 		</label>
 	</section>
-	<p v-if="status">データ取得中…</p>
+	<p v-if="pending">データ取得中…</p>
 	<section v-else>
-		<h2>{{ selectedCity.name }}の天気</h2>
-		<p>{{ data }}</p>
+		<h2>{{ data?.cityName }}</h2>
+		<p>{{ data?.description }}</p>
 	</section>
 </template>
